@@ -84,6 +84,7 @@ async function crearProducto() {
     document.getElementById('nombreInput').value = '';
     document.getElementById('precioInput').value = '';
     document.getElementById('productoId').value = '';
+    document.getElementById('buscarAdminInput').value = '';
     cargarProductos();
 }
 
@@ -92,10 +93,15 @@ function prepararEdicion(id, nombre, precio) {
     document.getElementById('productoId').value = id;
     document.getElementById('nombreInput').value = nombre;
     document.getElementById('precioInput').value = precio;
-    
+
+    // NUEVA LÍNEA: Limpiar el buscador para que no haya conflicto
+    document.getElementById('buscarAdminInput').value = '';
+    // NUEVA LÍNEA: Redibujar la lista completa sin el filtro anterior
+    renderizarAdmin(productosGlobal);
+
     // Hacemos scroll hacia arriba para que el usuario vea el formulario
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
+
     // Enfocamos el campo de nombre para que sea más rápido editar
     document.getElementById('nombreInput').focus();
 }
@@ -110,6 +116,7 @@ async function eliminarProducto(id) {
         .eq('id', id);
     
     if (error) alert('Error al eliminar: ' + error.message);
+    document.getElementById('buscarAdminInput').value = '';
     cargarProductos();
 }
 
