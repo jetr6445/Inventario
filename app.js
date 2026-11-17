@@ -1,6 +1,6 @@
 // 1. Configuración de Supabase (Reemplaza con tus credenciales del Paso 1)
-const SUPABASE_URL = 'TU_PROJECT_URL_AQUI';
-const SUPABASE_KEY = 'TU_ANON_KEY_AQUI';
+const SUPABASE_URL = 'https://emedutxubsqpjcwuqabs.supabase.co/rest/v1/';
+const SUPABASE_KEY = 'sb_publishable_qoZAxsELwapEaHjaQsalcw_IYnwg43n';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Variable global para almacenar los productos
