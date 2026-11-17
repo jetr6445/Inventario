@@ -1,20 +1,22 @@
-// 1. Configuración de Supabase (Reemplaza con tus credenciales del Paso 1)
-const SUPABASE_URL = 'https://emedutxubsqpjcwuqabs.supabase.co/rest/v1/';
+// 1. Configuración de Supabase (URL CORREGIDA sin /rest/v1/)
+const SUPABASE_URL = 'https://emedutxubsqpjcwuqabs.supabase.co'; 
 const SUPABASE_KEY = 'sb_publishable_qoZAxsELwapEaHjaQsalcw_IYnwg43n';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Variable global para almacenar los productos
+// CAMBIAMOS EL NOMBRE A 'supabaseClient' PARA EVITAR EL ERROR DE DECLARACIÓN
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 let productosGlobal = [];
 
-// 2. Función para LEER (Read) y mostrar en ambas listas
+// 2. Función para LEER (Read)
 async function cargarProductos() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
         .from('productos')
         .select('*')
         .order('id', { ascending: false });
 
     if (error) {
         console.error('Error al cargar:', error);
+        alert('Error al cargar productos: ' + error.message);
         return;
     }
 
@@ -52,7 +54,7 @@ function renderizarConsulta(productos) {
     });
 }
 
-// 3. Función para CREAR o ACTUALIZAR (Create / Update)
+// 3. Función para CREAR o ACTUALIZAR
 async function crearProducto() {
     const nombre = document.getElementById('nombreInput').value;
     const precio = parseFloat(document.getElementById('precioInput').value);
@@ -65,14 +67,14 @@ async function crearProducto() {
 
     if (id) {
         // Actualizar
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('productos')
             .update({ nombre, precio })
             .eq('id', id);
         if (error) alert('Error al actualizar: ' + error.message);
     } else {
         // Crear
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('productos')
             .insert([{ nombre, precio }]);
         if (error) alert('Error al crear: ' + error.message);
@@ -92,11 +94,11 @@ function prepararEdicion(id, nombre, precio) {
     document.getElementById('precioInput').value = precio;
 }
 
-// 5. Función para ELIMINAR (Delete)
+// 5. Función para ELIMINAR
 async function eliminarProducto(id) {
     if (!confirm('¿Seguro que quieres eliminar este producto?')) return;
     
-    const { error } = await supabase
+    const { error } = await supabaseClient
         .from('productos')
         .delete()
         .eq('id', id);
