@@ -15,9 +15,13 @@
 <body>
     <h1>Gestión de Productos</h1>
 
-    <!-- Sección de Administración (CRUD) -->
+       <!-- Sección de Administración (CRUD) -->
     <div class="seccion">
         <h2>Administrar Productos</h2>
+        
+        <!-- NUEVO BUSCADOR PARA ADMINISTRAR -->
+        <input type="text" id="buscarAdminInput" placeholder="🔍 Buscar producto para editar..." oninput="filtrarAdmin()" style="width: 100%; margin-bottom: 1rem;">
+        
         <input type="text" id="nombreInput" placeholder="Nombre del producto">
         <input type="number" id="precioInput" placeholder="Precio" step="0.01">
         <button onclick="crearProducto()">Agregar / Actualizar</button>
