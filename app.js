@@ -87,11 +87,17 @@ async function crearProducto() {
     cargarProductos();
 }
 
-// 4. Función para preparar la EDICIÓN
+// 4. Función para preparar la EDICIÓN (Mejorada)
 function prepararEdicion(id, nombre, precio) {
     document.getElementById('productoId').value = id;
     document.getElementById('nombreInput').value = nombre;
     document.getElementById('precioInput').value = precio;
+    
+    // Hacemos scroll hacia arriba para que el usuario vea el formulario
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Enfocamos el campo de nombre para que sea más rápido editar
+    document.getElementById('nombreInput').focus();
 }
 
 // 5. Función para ELIMINAR
@@ -118,3 +124,12 @@ function filtrarProductos() {
 
 // 7. Inicializar la app
 cargarProductos();
+
+// 8. NUEVO: Filtro exclusivo para la sección de Administración
+function filtrarAdmin() {
+    const texto = document.getElementById('buscarAdminInput').value.toLowerCase();
+    const filtrados = productosGlobal.filter(p => 
+        p.nombre.toLowerCase().includes(texto)
+    );
+    renderizarAdmin(filtrados);
+}
