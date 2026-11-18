@@ -30,8 +30,8 @@ function renderizarAdmin(productos) {
         contenedor.innerHTML += `
             <div class="producto-item">
                 <span>${p.nombre} - <span class="precio">$${p.precio}</span></span>
-                <div>
-                    <!-- Aquí agregamos las nuevas clases btn-editar y btn-eliminar -->
+                <!-- Agregamos el div contenedor aquí -->
+                <div class="acciones-container">
                     <button class="btn-accion btn-editar" onclick="prepararEdicion(${p.id}, '${p.nombre}', ${p.precio})">Editar</button>
                     <button class="btn-accion btn-eliminar" onclick="eliminarProducto(${p.id})">Eliminar</button>
                 </div>
