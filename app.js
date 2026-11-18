@@ -114,8 +114,8 @@ async function eliminarProducto(id) {
 function filtrarProductos() {
     const texto = document.getElementById('buscarInput').value.toLowerCase();
     
-    // Mostrar u ocultar la X dependiendo de si hay texto
-    document.getElementById('btnLimpiarConsulta').style.display = texto.length > 0 ? 'block' : 'none';
+    // CAMBIO AQUÍ: Usar 'flex' en lugar de 'block' para mantener el centrado
+    document.getElementById('btnLimpiarConsulta').style.display = texto.length > 0 ? 'flex' : 'none';
 
     const filtrados = productosGlobal.filter(p => 
         p.nombre.toLowerCase().includes(texto)
