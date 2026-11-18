@@ -61,8 +61,33 @@
         .precio { font-weight: bold; color: #2e7d32; }
         
         /* Estilo para los botones de editar/eliminar */
-        .btn-accion { padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; border: 1px solid #ccc; background: #fff;}
-        .btn-accion:hover { background: #f0f0f0; }
+                /* Estilo base para los botones */
+        .btn-accion { 
+            padding: 0.4rem 0.8rem; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            border: none; 
+            color: white; /* Texto blanco para ambos */
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .btn-accion:hover { 
+            opacity: 0.8; /* Se oscurece un poco al pasar el mouse */
+        }
+
+        /* Botón Editar (Azul) */
+        .btn-editar {
+            background-color: #1a73e8;
+        }
+
+        /* Botón Eliminar (Rojo) */
+        .btn-eliminar {
+            background-color: #dc3545;
+        }
     </style>
 </head>
 <body>
