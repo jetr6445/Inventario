@@ -114,6 +114,10 @@ async function eliminarProducto(id) {
 // 6. Filtro para la consulta
 function filtrarProductos() {
     const texto = document.getElementById('buscarInput').value.toLowerCase();
+    
+    // Mostrar u ocultar la X dependiendo de si hay texto
+    document.getElementById('btnLimpiarConsulta').style.display = texto.length > 0 ? 'block' : 'none';
+
     const filtrados = productosGlobal.filter(p => 
         p.nombre.toLowerCase().includes(texto)
     );
@@ -142,5 +146,14 @@ function cambiarPestana(nombrePestana, botonClickeado) {
     botonClickeado.classList.add('active');
 }
 
-// 9. Inicializar la app
+// 9. NUEVA FUNCIÓN  Limpiar el buscador
+function limpiarBuscador(idInput, idBoton) {
+    // 1. Vaciamos el input
+    document.getElementById('idInput').value = ''; // (Asegúrate de usar las variables correctas aquí)
+    document.getElementById('idBoton').style.display = 'none';
+    renderizarConsulta(productosGlobal);
+    document.getElementById('idInput').focus();
+}
+
+// 10. Inicializar la app (ESTA SIEMPRE VA AL FINAL)
 cargarProductos();
