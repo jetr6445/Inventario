@@ -1,8 +1,6 @@
-// 1. Configuración de Supabase (URL CORREGIDA sin /rest/v1/)
+// 1. Configuración de Supabase
 const SUPABASE_URL = 'https://emedutxubsqpjcwuqabs.supabase.co'; 
 const SUPABASE_KEY = 'sb_publishable_qoZAxsELwapEaHjaQsalcw_IYnwg43n';
-
-// CAMBIAMOS EL NOMBRE A 'supabaseClient' PARA EVITAR EL ERROR DE DECLARACIÓN
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let productosGlobal = [];
@@ -33,8 +31,8 @@ function renderizarAdmin(productos) {
             <div class="producto-item">
                 <span>${p.nombre} - <span class="precio">$${p.precio}</span></span>
                 <div>
-                    <button onclick="prepararEdicion(${p.id}, '${p.nombre}', ${p.precio})">Editar</button>
-                    <button onclick="eliminarProducto(${p.id})">Eliminar</button>
+                    <button class="btn-accion" onclick="prepararEdicion(${p.id}, '${p.nombre}', ${p.precio})">Editar</button>
+                    <button class="btn-accion" onclick="eliminarProducto(${p.id})">Eliminar</button>
                 </div>
             </div>
         `;
@@ -66,21 +64,18 @@ async function crearProducto() {
     }
 
     if (id) {
-        // Actualizar
         const { error } = await supabaseClient
             .from('productos')
             .update({ nombre, precio })
             .eq('id', id);
         if (error) alert('Error al actualizar: ' + error.message);
     } else {
-        // Crear
         const { error } = await supabaseClient
             .from('productos')
             .insert([{ nombre, precio }]);
         if (error) alert('Error al crear: ' + error.message);
     }
 
-    // Limpiar formulario y recargar
     document.getElementById('nombreInput').value = '';
     document.getElementById('precioInput').value = '';
     document.getElementById('productoId').value = '';
@@ -88,21 +83,16 @@ async function crearProducto() {
     cargarProductos();
 }
 
-// 4. Función para preparar la EDICIÓN (Mejorada)
+// 4. Función para preparar la EDICIÓN
 function prepararEdicion(id, nombre, precio) {
     document.getElementById('productoId').value = id;
     document.getElementById('nombreInput').value = nombre;
     document.getElementById('precioInput').value = precio;
 
-    // NUEVA LÍNEA: Limpiar el buscador para que no haya conflicto
     document.getElementById('buscarAdminInput').value = '';
-    // NUEVA LÍNEA: Redibujar la lista completa sin el filtro anterior
     renderizarAdmin(productosGlobal);
 
-    // Hacemos scroll hacia arriba para que el usuario vea el formulario
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Enfocamos el campo de nombre para que sea más rápido editar
     document.getElementById('nombreInput').focus();
 }
 
@@ -129,10 +119,7 @@ function filtrarProductos() {
     renderizarConsulta(filtrados);
 }
 
-// 7. Inicializar la app
-cargarProductos();
-
-// 8. NUEVO: Filtro exclusivo para la sección de Administración
+// 7. Filtro para administración
 function filtrarAdmin() {
     const texto = document.getElementById('buscarAdminInput').value.toLowerCase();
     const filtrados = productosGlobal.filter(p => 
@@ -140,3 +127,19 @@ function filtrarAdmin() {
     );
     renderizarAdmin(filtrados);
 }
+
+// 8. NUEVA FUNCIÓN: Controlar las Pestañas
+function cambiarPestana(nombrePestana, botonClickeado) {
+    // 1. Ocultar todas las secciones
+    document.querySelectorAll('.seccion').forEach(sec => sec.classList.remove('active'));
+    
+    // 2. Quitar la clase 'active' de todos los botones
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    // 3. Mostrar la sección seleccionada y activar su botón
+    document.getElementById('seccion-' + nombrePestana).classList.add('active');
+    botonClickeado.classList.add('active');
+}
+
+// 9. Inicializar la app
+cargarProductos();
