@@ -31,8 +31,9 @@ function renderizarAdmin(productos) {
             <div class="producto-item">
                 <span>${p.nombre} - <span class="precio">$${p.precio}</span></span>
                 <div>
-                    <button class="btn-accion" onclick="prepararEdicion(${p.id}, '${p.nombre}', ${p.precio})">Editar</button>
-                    <button class="btn-accion" onclick="eliminarProducto(${p.id})">Eliminar</button>
+                    <!-- Aquí agregamos las nuevas clases btn-editar y btn-eliminar -->
+                    <button class="btn-accion btn-editar" onclick="prepararEdicion(${p.id}, '${p.nombre}', ${p.precio})">Editar</button>
+                    <button class="btn-accion btn-eliminar" onclick="eliminarProducto(${p.id})">Eliminar</button>
                 </div>
             </div>
         `;
