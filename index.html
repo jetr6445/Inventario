@@ -144,7 +144,11 @@
     <!-- Pestaña 1: Consultar (Activa por defecto) -->
     <div id="seccion-consulta" class="seccion active">
         <h2>Consultar Precios</h2>
-        <input type="text" id="buscarInput" placeholder="🔍 Buscar producto..." oninput="filtrarProductos()" style="width: 100%; max-width: 300px; margin-bottom: 1rem;">
+       <div class="buscador-container">
+            <input type="text" id="buscarInput" placeholder="🔍 Buscar producto..." oninput="filtrarProductos()">
+            <!-- El botón de la X. El onclick llama a una nueva función en JS -->
+            <button class="btn-limpiar" id="btnLimpiarConsulta" onclick="limpiarBuscador('buscarInput', 'btnLimpiarConsulta')" title="Limpiar búsqueda">✕</button>
+        </div>
         <div id="listaConsulta"></div>
     </div>
 
