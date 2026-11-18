@@ -30,7 +30,6 @@ function renderizarAdmin(productos) {
         contenedor.innerHTML += `
             <div class="producto-item">
                 <span>${p.nombre} - <span class="precio">$${p.precio}</span></span>
-                <!-- Agregamos el div contenedor aquí -->
                 <div class="acciones-container">
                     <button class="btn-accion btn-editar" onclick="prepararEdicion(${p.id}, '${p.nombre}', ${p.precio})">Editar</button>
                     <button class="btn-accion btn-eliminar" onclick="eliminarProducto(${p.id})">Eliminar</button>
@@ -133,27 +132,25 @@ function filtrarAdmin() {
     renderizarAdmin(filtrados);
 }
 
-// 8. NUEVA FUNCIÓN: Controlar las Pestañas
+// 8. Controlar las Pestañas
 function cambiarPestana(nombrePestana, botonClickeado) {
-    // 1. Ocultar todas las secciones
     document.querySelectorAll('.seccion').forEach(sec => sec.classList.remove('active'));
-    
-    // 2. Quitar la clase 'active' de todos los botones
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    
-    // 3. Mostrar la sección seleccionada y activar su botón
     document.getElementById('seccion-' + nombrePestana).classList.add('active');
     botonClickeado.classList.add('active');
 }
 
-// 9. NUEVA FUNCIÓN  Limpiar el buscador
+// 9. NUEVA FUNCIÓN CORREGIDA: Limpiar el buscador
 function limpiarBuscador(idInput, idBoton) {
-    // 1. Vaciamos el input
-    document.getElementById('idInput').value = ''; // (Asegúrate de usar las variables correctas aquí)
-    document.getElementById('idBoton').style.display = 'none';
-    renderizarConsulta(productosGlobal);
-    document.getElementById('idInput').focus();
+    const input = document.getElementById(idInput);
+    const boton = document.getElementById(idBoton);
+    
+    input.value = ''; // Vaciamos el input usando la variable
+    boton.style.display = 'none'; // Ocultamos la X
+    
+    renderizarConsulta(productosGlobal); // Restauramos la lista completa
+    input.focus(); // Volvemos a poner el cursor en el campo
 }
 
-// 10. Inicializar la app (ESTA SIEMPRE VA AL FINAL)
+// 10. Inicializar la app
 cargarProductos();
