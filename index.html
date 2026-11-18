@@ -93,6 +93,43 @@
         .btn-eliminar {
             background-color: #dc3545;
         }
+        /* 1. El contenedor que envuelve al input */
+        .buscador-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 1rem;
+        }
+
+        /* 2. El campo de texto, le damos espacio a la derecha */
+        .buscador-container input {
+            width: 100%;
+            padding-right: 2rem; /* Deja espacio para la X */
+            box-sizing: border-box;
+            margin: 0;
+        }
+
+        /* 3. El botón de la X (oculto por defecto) */
+        .btn-limpiar {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            display: none; /* Oculto hasta que escribas */
+            font-weight: bold;
+        }
+
+        /* 4. Efecto al pasar el mouse por la X */
+        .btn-limpiar:hover {
+            color: #333;
+        }
     </style>
 </head>
 <body>
