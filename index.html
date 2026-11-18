@@ -57,8 +57,13 @@
         }
 
         input, button { padding: 0.5rem; margin: 0.2rem; }
-        .producto-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 0.8rem 0; }
+        .producto-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 0.8rem 0; gap: 1rem;}
         .precio { font-weight: bold; color: #2e7d32; }
+        .acciones-container {
+            display: flex;
+            gap: 0.5rem; /* Espacio entre el botón editar y eliminar */
+            flex-shrink: 0; /* ESTA ES LA MAGIA: evita que los botones se aplasten o bajen */
+        }
         
         /* Estilo para los botones de editar/eliminar */
                 /* Estilo base para los botones */
