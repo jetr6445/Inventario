@@ -5,6 +5,14 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let productosGlobal = [];
 
+// --- NUEVA FUNCIÓN: Formatear precios con puntos y comas ---
+function formatearPrecio(valor) {
+    return Number(valor).toLocaleString('es-CO', {
+        minimumFractionDigits: 0, // Si el precio es entero (ej. 2500), no muestra decimales (2.500)
+        maximumFractionDigits: 2  // Si tiene decimales (ej. 2500.50), muestra hasta 2 (2.500,50)
+    });
+}
+
 // 2. Función para LEER (Read)
 async function cargarProductos() {
     const { data, error } = await supabaseClient
@@ -29,7 +37,7 @@ function renderizarAdmin(productos) {
     productos.forEach(p => {
         contenedor.innerHTML += `
             <div class="producto-item">
-                <span>${p.nombre} - <span class="precio">$${p.precio}</span></span>
+                <span>${p.nombre} - <span class="precio">$${formatearPrecio(p.precio)}</span></span>
                 <div class="acciones-container">
                     <button class="btn-accion btn-editar" onclick="prepararEdicion(${p.id}, '${p.nombre}', ${p.precio})">Editar</button>
                     <button class="btn-accion btn-eliminar" onclick="eliminarProducto(${p.id})">Eliminar</button>
@@ -46,7 +54,7 @@ function renderizarConsulta(productos) {
         contenedor.innerHTML += `
             <div class="producto-item">
                 <span>${p.nombre}</span>
-                <span class="precio">$${p.precio}</span>
+                <span class="precio">$${formatearPrecio(p.precio)}</span>
             </div>
         `;
     });
