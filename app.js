@@ -4,6 +4,7 @@ const SUPABASE_KEY = 'sb_publishable_qoZAxsELwapEaHjaQsalcw_IYnwg43n';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let productosGlobal = [];
+let carrito = {}; // Aquí guardamos los productos seleccionados y sus cantidades
 
 // --- NUEVA FUNCIÓN: Formatear precios con puntos y comas ---
 function formatearPrecio(valor) {
@@ -122,7 +123,7 @@ async function eliminarProducto(id) {
 function filtrarProductos() {
     const texto = document.getElementById('buscarInput').value.toLowerCase();
     
-    // CAMBIO AQUÍ: Usar 'flex' en lugar de 'block' para mantener el centrado
+    // Usar 'flex' en lugar de 'block' para mantener el centrado de la X
     document.getElementById('btnLimpiarConsulta').style.display = texto.length > 0 ? 'flex' : 'none';
 
     const filtrados = productosGlobal.filter(p => 
@@ -146,9 +147,13 @@ function cambiarPestana(nombrePestana, botonClickeado) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('seccion-' + nombrePestana).classList.add('active');
     botonClickeado.classList.add('active');
+
+     if (nombrePestana === 'carrito') {
+        renderizarCarrito();
+    }
 }
 
-// 9. NUEVA FUNCIÓN CORREGIDA: Limpiar el buscador
+// 9. Limpiar el buscador
 function limpiarBuscador(idInput, idBoton) {
     const input = document.getElementById(idInput);
     const boton = document.getElementById(idBoton);
@@ -160,5 +165,74 @@ function limpiarBuscador(idInput, idBoton) {
     input.focus(); // Volvemos a poner el cursor en el campo
 }
 
-// 10. Inicializar la app
+// 10. Funciones para el Carrito / Cotizador
+function renderizarCarrito() {
+    const contenedor = document.getElementById('listaCarrito');
+    contenedor.innerHTML = '';
+
+    if (productosGlobal.length === 0) {
+        contenedor.innerHTML = '<p>No hay productos en el inventario.</p>';
+        return;
+    }
+
+    productosGlobal.forEach(p => {
+        const cantidad = carrito[p.id] ? carrito[p.id] : 0;
+
+        contenedor.innerHTML += `
+            <div class="producto-item" style="justify-content: flex-start; gap: 1rem;">
+                <input type="checkbox" 
+                    id="check-${p.id}" 
+                    onchange="alternarCarrito(${p.id}, this.checked)" 
+                    ${cantidad > 0 ? 'checked' : ''}
+                    style="width: 20px; height: 20px; cursor: pointer;">
+                
+                <label for="check-${p.id}" style="flex: 1; cursor: pointer; font-size: 1.05rem;">
+                    ${p.nombre} <span style="color:#888; font-size:0.9rem;">($${formatearPrecio(p.precio)})</span>
+                </label>
+
+                <!-- Usamos visibility en lugar de display para que el campo no mueva el texto al aparecer -->
+                <input type="number" 
+                    value="${cantidad}" 
+                    min="1" 
+                    onchange="cambiarCantidad(${p.id}, this.value)"
+                    style="width: 60px; text-align: center; visibility: ${cantidad > 0 ? 'visible' : 'hidden'};"
+                    id="cant-${p.id}">
+            </div>
+        `;
+    });
+
+    calcularTotal();
+}
+
+function alternarCarrito(id, estaChequeado) {
+    if (estaChequeado) {
+        carrito[id] = 1; 
+    } else {
+        delete carrito[id]; 
+    }
+    renderizarCarrito(); 
+}
+
+function cambiarCantidad(id, nuevaCantidad) {
+    const cant = parseInt(nuevaCantidad);
+    if (cant > 0) {
+        carrito[id] = cant;
+    } else {
+        delete carrito[id];
+    }
+    calcularTotal();
+}
+
+function calcularTotal() {
+    let total = 0;
+    for (const id in carrito) {
+        const producto = productosGlobal.find(p => p.id == id);
+        if (producto) {
+            total += producto.precio * carrito[id];
+        }
+    }
+    document.getElementById('totalCarrito').textContent = '$' + formatearPrecio(total);
+}
+
+// 11. Inicializar la app
 cargarProductos();
