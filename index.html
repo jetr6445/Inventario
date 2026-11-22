@@ -211,11 +211,10 @@
     </div>
 
     <!-- Pestaña 3: Carrito / Cotizador (Oculta por defecto) -->
-        <!-- Pestaña 3: Carrito / Cotizador (Oculta por defecto) -->
-    <div id="seccion-carrito" class="seccion">
+      <div id="seccion-carrito" class="seccion">
         <h2>Cotizar Productos</h2>
         
-        <!-- NUEVO: Buscador para el carrito -->
+        <!-- Buscador para el carrito -->
         <div class="buscador-container" style="max-width: 100%; margin-bottom: 1rem;">
             <input type="text" id="buscarCarritoInput" placeholder="🔍 Buscar producto para añadir al carrito..." oninput="filtrarCarrito()" autocomplete="off">
             <button class="btn-limpiar" id="btnLimpiarCarrito" onclick="limpiarBuscadorCarrito()" title="Limpiar búsqueda">
@@ -226,16 +225,27 @@
             </button>
         </div>
 
-        <!-- NUEVO: Contenedor para los resultados de búsqueda -->
+        <!-- Contenedor para los resultados de búsqueda -->
         <div id="resultadosBusquedaCarrito" style="margin-bottom: 1.5rem;"></div>
 
         <!-- LISTA DE PRODUCTOS SELECCIONADOS -->
         <h3 style="border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Productos Seleccionados</h3>
         <div id="listaCarrito"></div>
 
-        <div style="margin-top: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; text-align: right;">
-            <h3 style="margin: 0; color: #333;">Total a Pagar:</h3>
-            <span id="totalCarrito" style="font-size: 2rem; font-weight: bold; color: #2e7d32;">$0</span>
+        <!-- CONTENEDOR DEL TOTAL Y BOTÓN DE VACIAR ACTUALIZADO -->
+        <div style="margin-top: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center;">
+            
+            <!-- NUEVO BOTÓN PARA VACIAR -->
+            <button class="btn-accion btn-eliminar" onclick="vaciarCarrito()" style="padding: 0.6rem 1rem; font-size: 1rem;">
+                🗑️ Vaciar Carrito
+            </button>
+
+            <!-- TOTAL A PAGAR -->
+            <div style="text-align: right;">
+                <span style="font-size: 1.1rem; color: #333; margin-right: 10px;">Total:</span>
+                <span id="totalCarrito" style="font-size: 2rem; font-weight: bold; color: #2e7d32;">$0</span>
+            </div>
+
         </div>
     </div>
 
