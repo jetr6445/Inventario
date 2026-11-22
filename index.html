@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+5<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -173,6 +173,7 @@
     <div class="tabs-container">
         <button class="tab-btn active" onclick="cambiarPestana('consulta', this)">Consultar Precios</button>
         <button class="tab-btn" onclick="cambiarPestana('admin', this)">Administrar Productos</button>
+        <button class="tab-btn" onclick="cambiarPestana('carrito', this)">Cotizar / Carrito</button>
     </div>
 
     <!-- Pestaña 1: Consultar (Activa por defecto) -->
@@ -207,6 +208,22 @@
         
         <h3>Lista para Administrar</h3>
         <div id="listaAdmin"></div>
+    </div>
+
+    <!-- Pestaña 3: Carrito / Cotizador (Oculta por defecto) -->
+    <div id="seccion-carrito" class="seccion">
+        <h2>Cotizar Productos</h2>
+        <p>Selecciona los productos y las cantidades para calcular el total.</p>
+        
+        <!-- Aquí se dibujará la lista de productos para seleccionar -->
+        <div id="listaCarrito" style="margin-top: 1.5rem;">
+            <!-- Contenido generado por JS -->
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; text-align: right;">
+            <h3 style="margin: 0; color: #333;">Total a Pagar:</h3>
+            <span id="totalCarrito" style="font-size: 2rem; font-weight: bold; color: #2e7d32;">$0</span>
+        </div>
     </div>
 
     <!-- SDK de Supabase -->
