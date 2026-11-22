@@ -1,20 +1,26 @@
-// 1. Configuración de Supabase
+// ==========================================
+// 1. CONFIGURACIÓN Y VARIABLES GLOBALES
+// ==========================================
 const SUPABASE_URL = 'https://emedutxubsqpjcwuqabs.supabase.co'; 
 const SUPABASE_KEY = 'sb_publishable_qoZAxsELwapEaHjaQsalcw_IYnwg43n';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let productosGlobal = [];
-let carrito = {}; // Aquí guardamos los productos seleccionados y sus cantidades
+let productosGlobal = []; // Almacena todos los productos de la BD
+let carrito = {};         // Almacena los productos seleccionados { id: cantidad }
 
-// --- NUEVA FUNCIÓN: Formatear precios con puntos y comas ---
+// Función auxiliar para formatear números como moneda
 function formatearPrecio(valor) {
     return Number(valor).toLocaleString('es-CO', {
-        minimumFractionDigits: 0, // Si el precio es entero (ej. 2500), no muestra decimales (2.500)
-        maximumFractionDigits: 2  // Si tiene decimales (ej. 2500.50), muestra hasta 2 (2.500,50)
+        minimumFractionDigits: 0, 
+        maximumFractionDigits: 2  
     });
 }
 
-// 2. Función para LEER (Read)
+// ==========================================
+// 2. OPERACIONES CRUD (BASE DE DATOS)
+// ==========================================
+
+// LEER (Read)
 async function cargarProductos() {
     const { data, error } = await supabaseClient
         .from('productos')
@@ -31,6 +37,69 @@ async function cargarProductos() {
     renderizarAdmin(data);
     renderizarConsulta(data);
 }
+
+// CREAR o ACTUALIZAR (Create/Update)
+async function crearProducto() {
+    const nombre = document.getElementById('nombreInput').value;
+    const precio = parseFloat(document.getElementById('precioInput').value);
+    const id = document.getElementById('productoId').value;
+
+    if (!nombre || isNaN(precio)) {
+        alert('Por favor, completa ambos campos.');
+        return;
+    }
+
+    if (id) {
+        const { error } = await supabaseClient
+            .from('productos')
+            .update({ nombre, precio })
+            .eq('id', id);
+        if (error) alert('Error al actualizar: ' + error.message);
+    } else {
+        const { error } = await supabaseClient
+            .from('productos')
+            .insert([{ nombre, precio }]);
+        if (error) alert('Error al crear: ' + error.message);
+    }
+
+    // Limpiar formulario y recargar
+    document.getElementById('nombreInput').value = '';
+    document.getElementById('precioInput').value = '';
+    document.getElementById('productoId').value = '';
+    document.getElementById('buscarAdminInput').value = '';
+    cargarProductos();
+}
+
+// Preparar edición
+function prepararEdicion(id, nombre, precio) {
+    document.getElementById('productoId').value = id;
+    document.getElementById('nombreInput').value = nombre;
+    document.getElementById('precioInput').value = precio;
+
+    document.getElementById('buscarAdminInput').value = '';
+    renderizarAdmin(productosGlobal);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.getElementById('nombreInput').focus();
+}
+
+// ELIMINAR (Delete)
+async function eliminarProducto(id) {
+    if (!confirm('¿Seguro que quieres eliminar este producto?')) return;
+    
+    const { error } = await supabaseClient
+        .from('productos')
+        .delete()
+        .eq('id', id);
+    
+    if (error) alert('Error al eliminar: ' + error.message);
+    document.getElementById('buscarAdminInput').value = '';
+    cargarProductos();
+}
+
+// ==========================================
+// 3. RENDERIZADO Y FILTROS (INTERFAZ)
+// ==========================================
 
 function renderizarAdmin(productos) {
     const contenedor = document.getElementById('listaAdmin');
@@ -61,69 +130,8 @@ function renderizarConsulta(productos) {
     });
 }
 
-// 3. Función para CREAR o ACTUALIZAR
-async function crearProducto() {
-    const nombre = document.getElementById('nombreInput').value;
-    const precio = parseFloat(document.getElementById('precioInput').value);
-    const id = document.getElementById('productoId').value;
-
-    if (!nombre || isNaN(precio)) {
-        alert('Por favor, completa ambos campos.');
-        return;
-    }
-
-    if (id) {
-        const { error } = await supabaseClient
-            .from('productos')
-            .update({ nombre, precio })
-            .eq('id', id);
-        if (error) alert('Error al actualizar: ' + error.message);
-    } else {
-        const { error } = await supabaseClient
-            .from('productos')
-            .insert([{ nombre, precio }]);
-        if (error) alert('Error al crear: ' + error.message);
-    }
-
-    document.getElementById('nombreInput').value = '';
-    document.getElementById('precioInput').value = '';
-    document.getElementById('productoId').value = '';
-    document.getElementById('buscarAdminInput').value = '';
-    cargarProductos();
-}
-
-// 4. Función para preparar la EDICIÓN
-function prepararEdicion(id, nombre, precio) {
-    document.getElementById('productoId').value = id;
-    document.getElementById('nombreInput').value = nombre;
-    document.getElementById('precioInput').value = precio;
-
-    document.getElementById('buscarAdminInput').value = '';
-    renderizarAdmin(productosGlobal);
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.getElementById('nombreInput').focus();
-}
-
-// 5. Función para ELIMINAR
-async function eliminarProducto(id) {
-    if (!confirm('¿Seguro que quieres eliminar este producto?')) return;
-    
-    const { error } = await supabaseClient
-        .from('productos')
-        .delete()
-        .eq('id', id);
-    
-    if (error) alert('Error al eliminar: ' + error.message);
-    document.getElementById('buscarAdminInput').value = '';
-    cargarProductos();
-}
-
-// 6. Filtro para la consulta
 function filtrarProductos() {
     const texto = document.getElementById('buscarInput').value.toLowerCase();
-    
-    // Usar 'flex' en lugar de 'block' para mantener el centrado de la X
     document.getElementById('btnLimpiarConsulta').style.display = texto.length > 0 ? 'flex' : 'none';
 
     const filtrados = productosGlobal.filter(p => 
@@ -132,7 +140,6 @@ function filtrarProductos() {
     renderizarConsulta(filtrados);
 }
 
-// 7. Filtro para administración
 function filtrarAdmin() {
     const texto = document.getElementById('buscarAdminInput').value.toLowerCase();
     const filtrados = productosGlobal.filter(p => 
@@ -141,45 +148,49 @@ function filtrarAdmin() {
     renderizarAdmin(filtrados);
 }
 
-// 8. Controlar las Pestañas
-function cambiarPestana(nombrePestana, botonClickeado) {
-    document.querySelectorAll('.seccion').forEach(sec => sec.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('seccion-' + nombrePestana).classList.add('active');
-    botonClickeado.classList.add('active');
-
-     if (nombrePestana === 'carrito') {
-        renderizarCarrito();
-    }
-}
-
-// 9. Limpiar el buscador
 function limpiarBuscador(idInput, idBoton) {
     const input = document.getElementById(idInput);
     const boton = document.getElementById(idBoton);
     
-    input.value = ''; // Vaciamos el input usando la variable
-    boton.style.display = 'none'; // Ocultamos la X
+    input.value = '';
+    boton.style.display = 'none';
     
-    renderizarConsulta(productosGlobal); // Restauramos la lista completa
-    input.focus(); // Volvemos a poner el cursor en el campo
+    renderizarConsulta(productosGlobal);
+    input.focus();
 }
 
-// 10. Funciones para el Carrito / Cotizador Avanzado
-// Función que busca productos para añadir (no dibuja los que ya están seleccionados)
+// ==========================================
+// 4. CONTROL DE PESTAÑAS
+// ==========================================
+
+function cambiarPestana(nombrePestana, botonClickeado) {
+    document.querySelectorAll('.seccion').forEach(sec => sec.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    
+    document.getElementById('seccion-' + nombrePestana).classList.add('active');
+    botonClickeado.classList.add('active');
+
+    // Si entramos al carrito, lo actualizamos
+    if (nombrePestana === 'carrito') {
+        renderizarCarrito();
+    }
+}
+
+// ==========================================
+// 5. LÓGICA DEL CARRITO / COTIZADOR
+// ==========================================
+
 function filtrarCarrito() {
     const texto = document.getElementById('buscarCarritoInput').value.toLowerCase();
     const contenedor = document.getElementById('resultadosBusquedaCarrito');
     
-    // Mostrar/ocultar la X del buscador
     document.getElementById('btnLimpiarCarrito').style.display = texto.length > 0 ? 'flex' : 'none';
 
     if (texto.length === 0) {
-        contenedor.innerHTML = ''; // Si está vacío, no muestra nada
+        contenedor.innerHTML = '';
         return;
     }
 
-    // Filtramos los productos que coinciden y que NO estén ya en el carrito
     const filtrados = productosGlobal.filter(p => 
         p.nombre.toLowerCase().includes(texto) && !carrito[p.id]
     );
@@ -198,17 +209,15 @@ function filtrarCarrito() {
     `).join('');
 }
 
-// Agrega el producto al carrito (se activa al hacer clic en un resultado de búsqueda)
 function agregarAlCarrito(id) {
-    carrito[id] = 1; // Agrega con cantidad 1 por defecto
-    document.getElementById('buscarCarritoInput').value = ''; // Limpia el buscador
-    document.getElementById('resultadosBusquedaCarrito').innerHTML = ''; // Limpia resultados
-    document.getElementById('btnLimpiarCarrito').style.display = 'none'; // Oculta la X
+    carrito[id] = 1; 
+    document.getElementById('buscarCarritoInput').value = ''; 
+    document.getElementById('resultadosBusquedaCarrito').innerHTML = ''; 
+    document.getElementById('btnLimpiarCarrito').style.display = 'none'; 
     
-    renderizarCarrito(); // Redibuja la lista de seleccionados
+    renderizarCarrito(); 
 }
 
-// Limpia el buscador del carrito manualmente (con la X)
 function limpiarBuscadorCarrito() {
     document.getElementById('buscarCarritoInput').value = '';
     document.getElementById('resultadosBusquedaCarrito').innerHTML = '';
@@ -216,7 +225,6 @@ function limpiarBuscadorCarrito() {
     document.getElementById('buscarCarritoInput').focus();
 }
 
-// Dibuja SOLO los productos que ya están en el carrito
 function renderizarCarrito() {
     const contenedor = document.getElementById('listaCarrito');
     contenedor.innerHTML = '';
@@ -258,24 +266,22 @@ function renderizarCarrito() {
     calcularTotal();
 }
 
-// Cambia la cantidad de un producto seleccionado
 function cambiarCantidad(id, nuevaCantidad) {
     const cant = parseInt(nuevaCantidad);
     if (cant > 0) {
         carrito[id] = cant;
     } else {
-        delete carrito[id]; // Si la cantidad es 0, se quita
+        delete carrito[id]; 
     }
     calcularTotal();
 }
 
-// Elimina un producto del carrito
 function quitarDelCarrito(id) {
     delete carrito[id];
     renderizarCarrito();
 }
 
-// Suma los precios y muestra el total
+// CÁLCULOS FINANCIEROS (Total y Cambio)
 function calcularTotal() {
     let total = 0;
     for (const id in carrito) {
@@ -285,21 +291,47 @@ function calcularTotal() {
         }
     }
     document.getElementById('totalCarrito').textContent = '$' + formatearPrecio(total);
+    
+    // Si el total cambia, recalculamos el cambio automáticamente
+    calcularCambio(); 
 }
 
-// Elimina todos los productos del carrito de una sola vez
-function vaciarCarrito() {
-    // Pedimos confirmación para evitar borrados accidentales
-    if (confirm('¿Estás seguro de que quieres vaciar todo el carrito?')) {
-        carrito = {}; // Vaciamos el objeto
-        renderizarCarrito(); // Redibujamos el carrito (quedará vacío)
-        
-        // También limpiamos cualquier texto que haya quedado en el buscador del carrito
-        document.getElementById('buscarCarritoInput').value = '';
-        document.getElementById('resultadosBusquedaCarrito').innerHTML = '';
-        document.getElementById('btnLimpiarCarrito').style.display = 'none';
+function calcularCambio() {
+    const totalTexto = document.getElementById('totalCarrito').textContent;
+    const totalLimpio = parseFloat(totalTexto.replace(/[^0-9,-]+/g,"").replace(",", ".")) || 0;
+    const efectivo = parseFloat(document.getElementById('inputEfectivo').value) || 0;
+    const cambio = efectivo - totalLimpio;
+    const textoCambio = document.getElementById('textoCambio');
+
+    if (efectivo === 0) {
+        textoCambio.textContent = '$0';
+        textoCambio.style.color = '#1a73e8'; 
+    } else if (cambio < 0) {
+        textoCambio.textContent = 'Falta dinero';
+        textoCambio.style.color = '#dc3545'; 
+    } else {
+        textoCambio.textContent = '$' + formatearPrecio(cambio);
+        textoCambio.style.color = '#2e7d32'; 
     }
 }
 
-// 11. Inicializar la app
+function vaciarCarrito() {
+    if (confirm('¿Estás seguro de que quieres vaciar todo el carrito?')) {
+        carrito = {}; 
+        renderizarCarrito(); 
+        
+        document.getElementById('buscarCarritoInput').value = '';
+        document.getElementById('resultadosBusquedaCarrito').innerHTML = '';
+        document.getElementById('btnLimpiarCarrito').style.display = 'none';
+        
+        // Limpiamos el efectivo y el cambio
+        document.getElementById('inputEfectivo').value = '';
+        document.getElementById('textoCambio').textContent = '$0';
+        document.getElementById('textoCambio').style.color = '#1a73e8';
+    }
+}
+
+// ==========================================
+// 6. INICIALIZACIÓN
+// ==========================================
 cargarProductos();
