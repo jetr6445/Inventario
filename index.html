@@ -211,14 +211,27 @@
     </div>
 
     <!-- Pestaña 3: Carrito / Cotizador (Oculta por defecto) -->
+        <!-- Pestaña 3: Carrito / Cotizador (Oculta por defecto) -->
     <div id="seccion-carrito" class="seccion">
         <h2>Cotizar Productos</h2>
-        <p>Selecciona los productos y las cantidades para calcular el total.</p>
         
-        <!-- Aquí se dibujará la lista de productos para seleccionar -->
-        <div id="listaCarrito" style="margin-top: 1.5rem;">
-            <!-- Contenido generado por JS -->
+        <!-- NUEVO: Buscador para el carrito -->
+        <div class="buscador-container" style="max-width: 100%; margin-bottom: 1rem;">
+            <input type="text" id="buscarCarritoInput" placeholder="🔍 Buscar producto para añadir al carrito..." oninput="filtrarCarrito()" autocomplete="off">
+            <button class="btn-limpiar" id="btnLimpiarCarrito" onclick="limpiarBuscadorCarrito()" title="Limpiar búsqueda">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
         </div>
+
+        <!-- NUEVO: Contenedor para los resultados de búsqueda -->
+        <div id="resultadosBusquedaCarrito" style="margin-bottom: 1.5rem;"></div>
+
+        <!-- LISTA DE PRODUCTOS SELECCIONADOS -->
+        <h3 style="border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Productos Seleccionados</h3>
+        <div id="listaCarrito"></div>
 
         <div style="margin-top: 2rem; padding: 1rem; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; text-align: right;">
             <h3 style="margin: 0; color: #333;">Total a Pagar:</h3>
