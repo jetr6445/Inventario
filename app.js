@@ -287,5 +287,19 @@ function calcularTotal() {
     document.getElementById('totalCarrito').textContent = '$' + formatearPrecio(total);
 }
 
+// Elimina todos los productos del carrito de una sola vez
+function vaciarCarrito() {
+    // Pedimos confirmación para evitar borrados accidentales
+    if (confirm('¿Estás seguro de que quieres vaciar todo el carrito?')) {
+        carrito = {}; // Vaciamos el objeto
+        renderizarCarrito(); // Redibujamos el carrito (quedará vacío)
+        
+        // También limpiamos cualquier texto que haya quedado en el buscador del carrito
+        document.getElementById('buscarCarritoInput').value = '';
+        document.getElementById('resultadosBusquedaCarrito').innerHTML = '';
+        document.getElementById('btnLimpiarCarrito').style.display = 'none';
+    }
+}
+
 // 11. Inicializar la app
 cargarProductos();
